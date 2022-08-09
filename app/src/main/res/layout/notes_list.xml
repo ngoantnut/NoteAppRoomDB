@@ -34,9 +34,9 @@
 
             <ImageView
                 android:id="@+id/imageView_pin"
-                android:layout_alignParentEnd="true"
                 android:layout_width="20dp"
-                android:layout_height="20dp" />
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 
@@ -59,8 +59,8 @@
             android:textColor="@color/grey"
             android:textSize="14sp"
             android:textStyle="normal"
-            android:maxLines="10"
             android:padding="8dp"
+            android:singleLine="true"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"

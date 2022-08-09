@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface MainDAO {
     @Insert(onConflict = REPLACE)
-    void insert(Notes notes, int REPLACE);
+    void insert(Notes notes);
 
     @Query("SELECT * FROM notes ORDER BY ID DESC")
     List<Notes> getAll();
@@ -22,4 +22,7 @@ public interface MainDAO {
 
     @Delete
     void delete(Notes notes);
+
+    @Query("UPDATE notes SET pinned = :pin WHERE ID = :id")
+    void pin(int id, boolean pin);
 }
