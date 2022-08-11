@@ -25,4 +25,7 @@ public interface MainDAO {
 
     @Query("UPDATE notes SET pinned = :pin WHERE ID = :id")
     void pin(int id, boolean pin);
+
+    @Query("SELECT * FROM notes WHERE pinned = 1 ")
+    List<Notes> pinned();
 }

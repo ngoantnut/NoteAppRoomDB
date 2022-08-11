@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -31,9 +33,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     NotesListAdapter notesListAdapter;
     List<Notes> notes = new ArrayList<>();
     RoomDB database;
-    FloatingActionButton fab_add;
+    FloatingActionButton fab_add, fab_color, fab_pinned;
     SearchView searchView_home;
     Notes selectNotes;
+    RelativeLayout relativeLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,9 +44,13 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
         recyclerView = findViewById(R.id.recycler_home);
         fab_add = findViewById(R.id.fab_add);
+        fab_color = findViewById(R.id.fab_color);
+        fab_pinned =findViewById(R.id.fab_pinned);
         database =RoomDB.getInstance(this);
         notes= database.mainDAO().getAll();
         searchView_home = findViewById(R.id.searchView_home);
+
+        relativeLayout = findViewById(R.id.main_layout);
         updateRecyler(notes);
 
         fab_add.setOnClickListener(new View.OnClickListener() {
@@ -51,6 +58,43 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             public void onClick(View v) {
                 Intent intent = new Intent(new Intent(MainActivity.this, NotesTakerActivity.class));
                 startActivityForResult(intent, 101);
+            }
+        });
+
+        fab_color.setOnClickListener(new View.OnClickListener() {
+            final boolean[] isClicked = {false};
+            @Override
+            public void onClick(View v) {
+                if(isClicked[0]) {
+                    relativeLayout.setBackgroundColor(Color.BLACK);
+                    searchView_home.setBackgroundColor(Color.GRAY);
+                    isClicked[0] = false;
+                } else {
+                    relativeLayout.setBackgroundColor(Color.WHITE);
+                    searchView_home.setBackgroundColor(Color.parseColor("#C0DCE8"));
+                    isClicked[0] = true;
+                }
+            }
+        });
+
+        fab_pinned.setOnClickListener(new View.OnClickListener() {
+            boolean isPinned = false;
+            @Override
+            public void onClick(View v) {
+             if(isPinned){
+                 notes.clear();
+                 notes.addAll(database.mainDAO().pinned());
+                 notesListAdapter.notifyDataSetChanged();
+                 isPinned = false;
+                 Toast.makeText(MainActivity.this, "Danh sách ghi chú đã ghim", Toast.LENGTH_LONG).show();
+             }
+               else {
+                 notes.clear();
+                 notes.addAll(database.mainDAO().getAll());
+                 notesListAdapter.notifyDataSetChanged();
+                 Toast.makeText(MainActivity.this, "Tất cả danh sách", Toast.LENGTH_LONG).show();
+                 isPinned = true;
+             }
             }
         });
 
